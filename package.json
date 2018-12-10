@@ -31,7 +31,7 @@
     "nodeunit": "0.11",
     "ben": "0.0.0",
     "markdown-toc": "1.2.x",
-    "verror": "1.3.3",
+    "verror": "1.10.0",
     "vasync": "2.2.0"
   },
 
