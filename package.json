@@ -8,19 +8,21 @@
     "bunyan": "./bin/bunyan"
   },
   "files":[
-    "bin",
-    "lib"
+    "bin/",
+    "lib/"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/trentm/node-bunyan.git"
-  },
+  "repository": "hexojs/hexo-bunyan",
   "engines": {
     "node": ">=8.6.0"
   },
-  "keywords": ["log", "logging", "log4j", "json", "bunyan"],
+  "keywords": [
+    "log",
+    "logging",
+    "log4j",
+    "json",
+    "bunyan"
+  ],
   "license": "MIT",
-
   "// dtrace-provider": "required for dtrace features",
   "// mv": "required for RotatingFileStream",
   "// moment": "required for local time with CLI",
@@ -36,7 +38,6 @@
     "verror": "1.10.0",
     "vasync": "2.2.0"
   },
-
   "scripts": {
     "test": "make test"
   },
