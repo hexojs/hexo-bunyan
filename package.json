@@ -7,7 +7,11 @@
   "bin": {
     "bunyan": "./bin/bunyan"
   },
-  "files":[
+  "directories": {
+    "lib": "./lib",
+    "bin": "./bin"
+  },
+  "files": [
     "bin/",
     "lib/"
   ],
