@@ -1,14 +1,5 @@
-# higher prio
-
-- `bunyan` (without redir) ^C should stop, doesn't since recent change
-- man page for the bunyan CLI (refer to it in the readme)
-    - perhaps wait for a bunyan new version with deps, and use dashdash
-      with a (vapour) man page generator
-
 # v2
 
-- ^C fix
-- node-exeunt
 - `createLogger(<config-and-fields>, <fields>)` changes (#460)
     - see section below
 - the dtrace-provider thing (#487)
@@ -25,6 +16,8 @@
 - formatters: read up again on `glp master..1.x`
 - support for customer formatters
     - for the CLI as well? How? ~/.bunyanrc?
+- if doing ~/.bunyanrc, then consider color schemes
+
 
 
 # changes to ctor and log.child to separate fields from config
@@ -55,7 +48,7 @@ That's not too bad. It is clearer at least than:
 
 TODO:
 
-- is there a ticket for this work already?
+- is there a ticket for this work already?  #460
 - make the change
 - do a migration guide? i.e. provide the grep commands to find all
   possible calls to inspect. E.g. if don't have `rg logUndefined` in your
@@ -63,6 +56,15 @@ TODO:
   to fields in the *second* arg.
 - list of issues/pulls that wanted to add new config fields
 
+
+# higher prio
+
+- published organized advice for
+  https://github.com/trentm/node-bunyan/issues/37 so can close that out.
+  Perhaps a wiki page with examples and strategies.
+- man page for the bunyan CLI (refer to it in the readme)
+    - perhaps wait for a bunyan new version with deps, and use dashdash
+      with a (vapour) man page generator
 
 
 # docs

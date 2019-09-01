@@ -1,7 +1,7 @@
 {
   "name": "hexo-bunyan",
   "version": "2.0.0",
-  "description": "a JSON logging library for node.js services(remove optional dependency DTrace-Provider for Hexo)",
+  "description": "a JSON logging library for node.js services",
   "author": "Trent Mick <trentm@gmail.com> (http://trentm.com)",
   "main": "./lib/bunyan.js",
   "bin": {
@@ -27,7 +27,6 @@
     "bunyan"
   ],
   "license": "MIT",
-  "// dtrace-provider": "required for dtrace features",
   "// mv": "required for RotatingFileStream",
   "// moment": "required for local time with CLI",
   "optionalDependencies": {
@@ -44,7 +43,5 @@
   },
   "scripts": {
     "test": "make test"
-  },
-  "dependencies": {
   }
 }

@@ -10,6 +10,11 @@ Known issues:
 (nothing yet)
 
 
+## 2.0.0 (beta)
+
+- [issue #499] Fix some `bunyan` CLI exit handling problems.
+
+
 ## 1.8.10
 
 - Ensure that `bunyan` errors out if attempting to use `-p PID` and

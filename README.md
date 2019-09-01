@@ -1,5 +1,7 @@
 [![npm version](https://img.shields.io/npm/v/hexo-bunyan.svg?style=flat)](https://www.npmjs.com/package/hexo-bunyan)
-[![Build Status](https://travis-ci.org/hexojs/hexo-bunyan.svg?branch=1.x)](https://travis-ci.org/hexojs/hexo-bunyan)
+[![Build Status](https://travis-ci.org/hexojs/hexo-bunyan.svg?branch=master)](https://travis-ci.org/hexojs/hexo-bunyan)
+
+A forked version of [Bunyan](https://github.com/trentm/node-bunyan) that removes dtrace support.
 
 Bunyan is **a simple and fast JSON logging library** for node.js services:
 
@@ -64,15 +66,23 @@ record (see below).
 
 # Current Status
 
-Solid core functionality is there. Joyent is using this for a number of
-production services. Bunyan supports node 0.10 and greater. Follow
-<a href="https://twitter.com/intent/user?screen_name=trentmick" target="_blank">@trentmick</a>
-for updates to Bunyan.
+Stable. I do my best to follow semver: i.e. you should only need to worry
+about code breaking for a *major* version bump.  Bunyan currently supports node
+0.10 and greater. Follow <a href="https://twitter.com/intent/user?screen_name=trentmick"
+target="_blank">@trentmick</a> for updates to Bunyan.
 
 There is an email discussion list
 [bunyan-logging@googlegroups.com](mailto:bunyan-logging@googlegroups.com),
 also [as a forum in the
 browser](https://groups.google.com/forum/?fromgroups#!forum/bunyan-logging).
+
+Active branches:
+- "1.x" is for 1.x maintenance work, if any. 1.x releases are still "latest" in
+  npm.
+- "master" is currently for coming Bunyan 2.x work. For now, 2.x releases are
+  published to npm with the "beta" tag, meaning that `npm install bunyan` is
+  still 1.x for now. To install 2.x use `npm install bunyan@2` or
+  `npm install bunyan@beta`.
 
 
 # Installation
@@ -174,7 +184,13 @@ log.info(err, 'more on this: %s', more);
 
 log.info({foo: 'bar', err: err}, 'some msg about this error');
                 // To pass in an Error *and* other fields, use the `err`
-                // field name for the Error instance.
+                // field name for the Error instance **and ensure your logger
+                // has a `err` serializer.** One way to ensure the latter is:
+                //      var log = bunyan.createLogger({
+                //          ...,
+                //          serializers: bunyan.stdSerializers
+                //      });
+                // See the "Serializers" section below for details.
 ```
 
 Note that this implies **you cannot blindly pass any object as the first
@@ -346,9 +362,9 @@ and have the `req` entry in the log record be just a reasonable subset of
 
 
 A logger instance can have a `serializers` mapping of log record field name
-("req" in this example) to a serializer function. When creating the log
-record, Bunyan will call the serializer function for fields of that name.
-An example:
+("req" in this example) to a serializer function. When creating the log record,
+Bunyan will call the serializer function for *top-level* fields of that name. An
+example:
 
 ```js
 function reqSerializer(req) {
@@ -367,9 +383,26 @@ var log = bunyan.createLogger({
 ```
 
 
-Typically serializers are added to a logger at creation time via
-`bunyan.createLogger({..., serializers: <serializers>})`. However, serializers
-can be added after creation via `<logger>.addSerializers(...)`, e.g.:
+Typically serializers are added to a logger at creation time via:
+
+```js
+var log = bunyan.createLogger({
+    name: 'myapp',
+    serializers: {
+        foo: function fooSerializer(foo) { ... },
+        ...
+    }
+});
+
+// or
+var log = bunyan.createLogger({
+    name: 'myapp',
+    serializers: bunyan.stdSerializers
+});
+```
+
+Serializers can also be added after creation via `<logger>.addSerializers(...)`,
+e.g.:
 
 ```js
 var log = bunyan.createLogger({name: 'myapp'});
@@ -414,7 +447,7 @@ rules and best practices for serializer functions:
   unexpected type. A good start at defensiveness is to start with this:
 
     ```javascript
-    function fooSerializers(foo) {
+    function fooSerializer(foo) {
         // Guard against foo be null/undefined. Check that expected fields
         // are defined.
         if (!foo || !foo.bar)
@@ -431,7 +464,7 @@ rules and best practices for serializer functions:
 ### Standard Serializers
 
 Bunyan includes a small set of "standard serializers", exported as
-`bunyan.stdSerializers`. Their use is completely optional. Example using
+`bunyan.stdSerializers`. Their use is completely optional. An example using
 all of them:
 
 ```js
@@ -454,7 +487,7 @@ Standard serializers are:
 
 | Field | Description |
 | ----- | ----------- |
-| err   | Used for serializing JavaScript error objects, including traversing an error's cause chain for error objects with a `.cause()` -- e.g. as from [verror](https://github.com/davepacheco/node-verror). |
+| err   | Used for serializing JavaScript error objects, including traversing an error's cause chain for error objects with a `.cause()` -- e.g. as from [verror](https://github.com/joyent/node-verror). |
 | req   | Common fields from a node.js HTTP request object. |
 | res   | Common fields from a node.js HTTP response object. |
 
@@ -1345,26 +1378,18 @@ log.info('hi on info');
 
 ## Webpack
 Webpack can work with the same example Browserify above. To do this, we need to make webpack ignore optional files:
-Create "empty_shim.js":
-```javascript
-// This is an empty shim for things that should be not be included in webpack
+
 ```
-Now tell webpack to use this file for
-[optional dependencies](https://webpack.github.io/docs/configuration.html#resolve-alias)
+Now tell webpack to ignore files for 
+[optional dependencies](https://webpack.js.org/configuration/module/#module-noparse)
 in your "webpack.config.js":
 ```
-resolve: {
-    // These shims are needed for bunyan
-    alias: {
-        'dtrace-provider': '/path/to/shim/empty_shim.js',
-        fs: '/path/to/shim/empty_shim.js',
-        'safe-json-stringify': '/path/to/shim/empty_shim.js',
-        mv: '/path/to/shim/empty_shim.js',
-        'source-map-support': '/path/to/shim/empty_shim.js'
-    }
+module: {
+    noParse: [/dtrace-provider$/, /safe-json-stringify$/, /mv/],
+    ...
 }
 ```
-Now webpack builds, ignoring these optional dependencies via shimming in an empty JS file!
+Now webpack builds.
 
 # Versioning
 
