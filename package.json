@@ -36,15 +36,17 @@
     "moment": "^2.10.6"
   },
   "devDependencies": {
-    "nodeunit": "0.11",
     "ben": "0.0.0",
+    "eslint": "^6.3.0",
+    "eslint-config-hexo": "^3.0.0",
     "markdown-toc": "1.2.x",
-    "verror": "1.10.0",
-    "vasync": "2.2.0"
+    "nodeunit": "0.11",
+    "vasync": "2.2.0",
+    "verror": "1.10.0"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "eslint": "eslint ./lib/bunyan.js"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
